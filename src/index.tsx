@@ -2,13 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { AppProviders } from 'providers/AppProviders';
+import { Theme } from 'providers/ThemeProvider';
 
 import { App } from './app/App';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <AppProviders>
-    <App />
+    <Theme>
+      <App />
+    </Theme>
   </AppProviders>,
   document.getElementById('root'),
 );
