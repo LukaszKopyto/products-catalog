@@ -8,9 +8,10 @@ export const GlobalStyle = createGlobalStyle`
         box-sizing:border-box;
         font-family: 'Nunito', sans-serif; 
     }
+    body {
+        background: #F0F1F5;
+    }
     #root{
         margin:0 auto;
-        background: #F0F1F5;
-        height: 100vh;
     }
  `;

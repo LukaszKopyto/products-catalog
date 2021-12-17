@@ -12,6 +12,7 @@ declare module 'styled-components' {
     grey3: string;
     grey4: string;
     grey5: string;
+    white: string;
   }
 }
 
@@ -24,6 +25,7 @@ const theme: DefaultTheme = {
   grey3: '#B9BDCF',
   grey4: '#9194A5',
   grey5: '#1A1B1D',
+  white: '#ffffff',
 };
 
 export const Theme = ({ children }: AppProvidersProps) => (

@@ -48,7 +48,8 @@
         "react/jsx-one-expression-per-line": "off",
         "no-use-before-define":"off",
         "no-shadow": "off",
-        "@typescript-eslint/no-shadow": ["error"]
+        "@typescript-eslint/no-shadow": ["error"],
+        "react/jsx-props-no-spreading": "off"
     },
     "settings": {
         "import/resolver": {
