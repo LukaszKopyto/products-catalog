@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Header from '../components/header/Header';
 import ProductCard from '../components/productCard/ProductCard';
 import { ProductCardProps } from '../components/productCard/ProductCard.types';
+import Lightbox from '../components/lightbox/Lightbox';
 
 const Grid = styled.div`
   display: grid;
@@ -18,6 +19,7 @@ const Grid = styled.div`
 
 export const Products = () => {
   const [items, setItems] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     axios
@@ -29,11 +31,12 @@ export const Products = () => {
   }, []);
 
   const products = items.map((item: ProductCardProps) => (
-    <ProductCard key={item.id} {...item} />
+    <ProductCard key={item.id} {...item} setIsOpen={setIsOpen} />
   ));
 
   return (
     <>
+      {isOpen ? <Lightbox setIsOpen={setIsOpen} /> : null}
       <Header />
       <Grid>{products}</Grid>
     </>

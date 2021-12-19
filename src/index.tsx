@@ -6,13 +6,16 @@ import { Theme } from 'providers/ThemeProvider';
 
 import { App } from './app/App';
 import * as serviceWorker from './serviceWorker';
+import LightboxProvider from './providers/LightboxContextProvider';
 
 ReactDOM.render(
-  <AppProviders>
-    <Theme>
-      <App />
-    </Theme>
-  </AppProviders>,
+  <LightboxProvider>
+    <AppProviders>
+      <Theme>
+        <App />
+      </Theme>
+    </AppProviders>
+  </LightboxProvider>,
   document.getElementById('root'),
 );
 

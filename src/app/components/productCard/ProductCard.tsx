@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { ProductCardProps } from './ProductCard.types';
 import Button from '../button/Button';
 import Rating from '../rating/Rating';
+import { LightboxContext } from '../../../providers/LightboxContextProvider';
 
 const CardWrapper = styled.div`
   display: flex;
@@ -37,10 +38,18 @@ const CardWrapper = styled.div`
 `;
 
 const ProductCard = (product: ProductCardProps) => {
-  const { image, description, name, active, rating } = product;
+  const { image, description, name, active, rating, setIsOpen } = product;
+  const { setImg, setAltAttr, setName, setDescription } =
+    useContext(LightboxContext);
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const handleClick = () => {};
+  const handleClick = () => {
+    setImg?.(image);
+    setAltAttr?.(name);
+    setName?.(name);
+    setDescription?.(description);
+    setIsOpen(true);
+  };
 
   return (
     <CardWrapper>

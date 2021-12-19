@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react';
+
 export interface ProductCardProps {
   active: boolean;
   description: string;
@@ -6,4 +8,5 @@ export interface ProductCardProps {
   name: string;
   promo: boolean;
   rating: number;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
