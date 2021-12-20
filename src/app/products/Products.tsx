@@ -5,6 +5,7 @@ import Header from '../components/header/Header';
 import ProductCard from '../components/productCard/ProductCard';
 import { ProductCardProps } from '../components/productCard/ProductCard.types';
 import Lightbox from '../components/lightbox/Lightbox';
+import Pagination from '../components/pagination/Pagination';
 
 const Grid = styled.div`
   display: grid;
@@ -17,18 +18,30 @@ const Grid = styled.div`
   }
 `;
 
+const DefaultState = {
+  currentPage: 1,
+  itemCount: 0,
+  itemsPerPage: 0,
+  totalItems: 0,
+  totalPages: 0,
+};
+
 export const Products = () => {
   const [items, setItems] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [pageInfo, setPageInfo] = useState(DefaultState);
 
   useEffect(() => {
     axios
-      .get('https://join-tsh-api-staging.herokuapp.com/products?limit=8&page=1')
+      .get(
+        `https://join-tsh-api-staging.herokuapp.com/products?limit=8&page=${pageInfo.currentPage}`,
+      )
       .then((res) => {
         setItems(res.data.items);
+        setPageInfo(res.data.meta);
       })
       .catch((error) => console.error(error));
-  }, []);
+  }, [pageInfo.currentPage]);
 
   const products = items.map((item: ProductCardProps) => (
     <ProductCard key={item.id} {...item} setIsOpen={setIsOpen} />
@@ -39,6 +52,12 @@ export const Products = () => {
       {isOpen ? <Lightbox setIsOpen={setIsOpen} /> : null}
       <Header />
       <Grid>{products}</Grid>
+      <Pagination
+        currentPage={pageInfo.currentPage}
+        totalPages={pageInfo.totalPages}
+        pageInfo={pageInfo}
+        setPageInfo={setPageInfo}
+      />
     </>
   );
 };
