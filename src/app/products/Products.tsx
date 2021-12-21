@@ -6,6 +6,7 @@ import ProductCard from '../components/productCard/ProductCard';
 import { ProductCardProps } from '../components/productCard/ProductCard.types';
 import Lightbox from '../components/lightbox/Lightbox';
 import Pagination from '../components/pagination/Pagination';
+import IsEmpty from '../components/isEmpty/IsEmpty';
 
 const Grid = styled.div`
   display: grid;
@@ -29,6 +30,7 @@ const DefaultState = {
 export const Products = () => {
   const [items, setItems] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(false);
   const [pageInfo, setPageInfo] = useState(DefaultState);
 
   useEffect(() => {
@@ -37,6 +39,7 @@ export const Products = () => {
         `https://join-tsh-api-staging.herokuapp.com/products?limit=8&page=${pageInfo.currentPage}`,
       )
       .then((res) => {
+        if (!res.data.items.length) setIsEmpty(true);
         setItems(res.data.items);
         setPageInfo(res.data.meta);
       })
@@ -51,13 +54,15 @@ export const Products = () => {
     <>
       {isOpen ? <Lightbox setIsOpen={setIsOpen} /> : null}
       <Header />
-      <Grid>{products}</Grid>
-      <Pagination
-        currentPage={pageInfo.currentPage}
-        totalPages={pageInfo.totalPages}
-        pageInfo={pageInfo}
-        setPageInfo={setPageInfo}
-      />
+      {isEmpty ? <IsEmpty /> : <Grid>{products}</Grid>}
+      {isEmpty ? null : (
+        <Pagination
+          currentPage={pageInfo.currentPage}
+          totalPages={pageInfo.totalPages}
+          pageInfo={pageInfo}
+          setPageInfo={setPageInfo}
+        />
+      )}
     </>
   );
 };
