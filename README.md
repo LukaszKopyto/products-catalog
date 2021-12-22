@@ -1,5 +1,9 @@
 # Getting Started with Create React App
 
+## Live demo
+
+[Live demo on Netlify](https://hungry-kilby-4b1b3b.netlify.app/)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
