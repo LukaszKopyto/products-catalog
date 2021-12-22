@@ -7,14 +7,17 @@ import { Theme } from 'providers/ThemeProvider';
 import { App } from './app/App';
 import * as serviceWorker from './serviceWorker';
 import LightboxProvider from './providers/LightboxContextProvider';
+import SearchProvider from './providers/SearchProvider';
 
 ReactDOM.render(
   <LightboxProvider>
-    <AppProviders>
-      <Theme>
-        <App />
-      </Theme>
-    </AppProviders>
+    <SearchProvider>
+      <AppProviders>
+        <Theme>
+          <App />
+        </Theme>
+      </AppProviders>
+    </SearchProvider>
   </LightboxProvider>,
   document.getElementById('root'),
 );

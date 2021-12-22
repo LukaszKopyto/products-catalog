@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { v4 as uuidv4 } from 'uuid';
 import { PaginationProps } from './Pagination.types';
 
 const PaginationWrapper = styled.div`
@@ -62,7 +61,7 @@ const Pagination = ({
       return (
         <button
           type="button"
-          key={uuidv4()}
+          key={item}
           className={
             currentPage === item + 1
               ? 'pagination__link active'
@@ -79,7 +78,7 @@ const Pagination = ({
       const button = (
         <button
           type="button"
-          key={uuidv4()}
+          key={item}
           className={
             currentPage === item
               ? 'pagination__link active'
@@ -94,7 +93,7 @@ const Pagination = ({
           {item}
         </button>
       );
-      const dots = <div>...</div>;
+      const dots = <div key={item}>...</div>;
       return typeof item === 'number' ? button : dots;
     });
   }

@@ -1,7 +1,8 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, useContext } from 'react';
 import styled from 'styled-components';
 import { ReactComponent as MagnifierIcon } from '../../../assets/magnifier.svg';
 import Checkbox from '../checkbox/Checkbox';
+import { SearchContext } from '../../../providers/SearchProvider';
 
 export const SearchInput = styled.div`
   display: flex;
@@ -63,11 +64,20 @@ export const SearchInput = styled.div`
 const Search = () => {
   const [value, setValue] = useState('');
 
+  const { setSearch, active, setActive, promo, setPromo } =
+    useContext(SearchContext);
+
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
   const handleSearch = () => {
-    console.warn('🚀 ➡️', value);
+    setSearch?.(value);
+  };
+
+  const handleKeypress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
   };
 
   return (
@@ -78,14 +88,15 @@ const Search = () => {
           placeholder="Search..."
           value={value}
           onChange={handleOnChange}
+          onKeyPress={handleKeypress}
         />
         <button type="button" className="search__icon" onClick={handleSearch}>
           <MagnifierIcon />
         </button>
       </div>
       <div className="search__checkboxes">
-        <Checkbox name="Active" />
-        <Checkbox name="Promo" />
+        <Checkbox name="Active" value={active} set={setActive} />
+        <Checkbox name="Promo" value={promo} set={setPromo} />
       </div>
     </SearchInput>
   );

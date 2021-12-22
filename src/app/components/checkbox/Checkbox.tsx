@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { CheckboxProps } from './Checkbox.types';
 
@@ -58,11 +58,9 @@ export const CheckboxInput = styled.label`
   }
 `;
 
-const Checkbox = ({ name }: CheckboxProps) => {
-  const [checked, setChecked] = useState(false);
-
+const Checkbox = ({ name, value, set }: CheckboxProps) => {
   const handleChange = () => {
-    setChecked(!checked);
+    set?.(!value);
   };
 
   return (
@@ -72,7 +70,7 @@ const Checkbox = ({ name }: CheckboxProps) => {
         type="checkbox"
         id={name}
         name={name}
-        checked={checked}
+        checked={value}
         onChange={handleChange}
       />
       <span className="checkmark" />

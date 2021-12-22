@@ -10,6 +10,7 @@ const CardWrapper = styled.div`
   flex-direction: column;
   background: white;
   border-radius: 8px;
+  position: relative;
   & img {
     width: 100%;
     height: auto;
@@ -20,6 +21,17 @@ const CardWrapper = styled.div`
     flex-direction: column;
     flex-grow: 1;
     padding: 1rem 1rem 1.5rem;
+  }
+  & .card__promo {
+    position: absolute;
+    top: 16px;
+    left: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.143;
+    background: ${({ theme }) => theme.secondaryColor};
+    color: ${({ theme }) => theme.white};
+    padding: 0.25rem 1rem;
   }
   & .card__name {
     font-size: 1.125rem;
@@ -38,11 +50,11 @@ const CardWrapper = styled.div`
 `;
 
 const ProductCard = (product: ProductCardProps) => {
-  const { image, description, name, active, rating, setIsOpen } = product;
+  const { image, description, name, active, rating, promo, setIsOpen } =
+    product;
   const { setImg, setAltAttr, setName, setDescription } =
     useContext(LightboxContext);
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const handleClick = () => {
     setImg?.(image);
     setAltAttr?.(name);
@@ -53,6 +65,7 @@ const ProductCard = (product: ProductCardProps) => {
 
   return (
     <CardWrapper>
+      {promo && <div className="card__promo">Promo</div>}
       <img src={image} alt={name} />
       <div className="card__info">
         <div className="card__name">{name}</div>
