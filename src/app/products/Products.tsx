@@ -8,6 +8,7 @@ import Lightbox from '../components/lightbox/Lightbox';
 import Pagination from '../components/pagination/Pagination';
 import IsEmpty from '../components/isEmpty/IsEmpty';
 import { SearchContext } from '../../providers/SearchProvider';
+import Loader from '../components/loader/Loader';
 
 const Grid = styled.div`
   display: grid;
@@ -33,6 +34,7 @@ export const Products = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
   const [pageInfo, setPageInfo] = useState(DefaultState);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { search, active, promo } = useContext(SearchContext);
 
@@ -42,6 +44,7 @@ export const Products = () => {
     const promoQuery = `&promo=${promo}`;
     if (active) url += activeQuery;
     if (promo) url += promoQuery;
+    setLoading(true);
     axios
       .get(url)
       .then((res) => {
@@ -50,6 +53,7 @@ export const Products = () => {
         } else {
           setIsEmpty(true);
         }
+        setLoading(false);
         setItems(res.data.items);
         setPageInfo(res.data.meta);
       })
@@ -65,6 +69,7 @@ export const Products = () => {
     <>
       {isOpen ? <Lightbox setIsOpen={setIsOpen} /> : null}
       <Header />
+      {loading && <Loader />}
       {isEmpty ? <IsEmpty /> : <Grid>{products}</Grid>}
       {isEmpty ? null : (
         <Pagination
