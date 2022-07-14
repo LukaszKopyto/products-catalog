@@ -1,8 +1,9 @@
-import React, { useState, ChangeEvent, useContext } from 'react';
+import React, { useState, ChangeEvent } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
+import { useSearchParams } from '../../hooks/useSearchParams';
 import { ReactComponent as MagnifierIcon } from '../../../assets/magnifier.svg';
 import Checkbox from '../checkbox/Checkbox';
-import { SearchContext } from '../../../providers/SearchProvider';
 
 export const SearchInput = styled.div`
   display: flex;
@@ -63,21 +64,35 @@ export const SearchInput = styled.div`
 
 const Search = () => {
   const [value, setValue] = useState('');
-
-  const { setSearch, active, setActive, promo, setPromo } =
-    useContext(SearchContext);
+  const history = useHistory();
+  const searchParams = useSearchParams();
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
   const handleSearch = () => {
-    setSearch?.(value);
+    if (value.length) {
+      searchParams.set('search', value);
+    } else {
+      searchParams.delete('search');
+    }
+    history.push({ search: searchParams.toString() });
   };
 
   const handleKeypress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSearch();
     }
+  };
+
+  const handleActive = (name: string) => {
+    if (searchParams.has(name)) {
+      searchParams.delete(name);
+    } else {
+      searchParams.append(name, 'true');
+    }
+    searchParams.set('page', '1');
+    history.push({ search: searchParams.toString() });
   };
 
   return (
@@ -95,8 +110,16 @@ const Search = () => {
         </button>
       </div>
       <div className="search__checkboxes">
-        <Checkbox name="Active" value={active} set={setActive} />
-        <Checkbox name="Promo" value={promo} set={setPromo} />
+        <Checkbox
+          name="Active"
+          value={searchParams.has('active')}
+          set={() => handleActive('active')}
+        />
+        <Checkbox
+          name="Promo"
+          value={searchParams.has('promo')}
+          set={() => handleActive('promo')}
+        />
       </div>
     </SearchInput>
   );

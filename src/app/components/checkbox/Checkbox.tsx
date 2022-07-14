@@ -59,10 +59,6 @@ export const CheckboxInput = styled.label`
 `;
 
 const Checkbox = ({ name, value, set }: CheckboxProps) => {
-  const handleChange = () => {
-    set?.(!value);
-  };
-
   return (
     <CheckboxInput htmlFor={name}>
       {name}
@@ -71,7 +67,7 @@ const Checkbox = ({ name, value, set }: CheckboxProps) => {
         id={name}
         name={name}
         checked={value}
-        onChange={handleChange}
+        onChange={set}
       />
       <span className="checkmark" />
     </CheckboxInput>

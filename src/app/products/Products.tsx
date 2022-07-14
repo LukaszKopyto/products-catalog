@@ -1,14 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 import Header from '../components/header/Header';
 import ProductCard from '../components/productCard/ProductCard';
 import { ProductCardProps } from '../components/productCard/ProductCard.types';
 import Lightbox from '../components/lightbox/Lightbox';
 import Pagination from '../components/pagination/Pagination';
 import IsEmpty from '../components/isEmpty/IsEmpty';
-import { SearchContext } from '../../providers/SearchProvider';
 import Loader from '../components/loader/Loader';
+import { useSearchParams } from '../hooks/useSearchParams';
 
 const Grid = styled.div`
   display: grid;
@@ -32,34 +33,30 @@ const DefaultState = {
 export const Products = () => {
   const [items, setItems] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [isEmpty, setIsEmpty] = useState(false);
   const [pageInfo, setPageInfo] = useState(DefaultState);
   const [loading, setLoading] = useState<boolean>(false);
+  const searchParams = useSearchParams();
+  const history = useHistory();
 
-  const { search, active, promo } = useContext(SearchContext);
+  const setPage = (currentPage: number) => {
+    searchParams.set('page', currentPage.toString());
+    history.push({ search: searchParams.toString() });
+    setPageInfo({ ...pageInfo, currentPage });
+  };
 
   useEffect(() => {
-    let url = `https://join-tsh-api-staging.herokuapp.com/products?limit=8&page=${pageInfo.currentPage}&search=${search}`;
-    const activeQuery = `&active=${active}`;
-    const promoQuery = `&promo=${promo}`;
-    if (active) url += activeQuery;
-    if (promo) url += promoQuery;
+    const url = `https://join-tsh-api-staging.herokuapp.com/products?limit=8&${searchParams.toString()}`;
     setLoading(true);
     axios
       .get(url)
       .then((res) => {
-        if (res.data.items.length) {
-          setIsEmpty(false);
-        } else {
-          setIsEmpty(true);
-        }
         setLoading(false);
         setItems(res.data.items);
         setPageInfo(res.data.meta);
       })
       // eslint-disable-next-line no-console
       .catch((error) => console.error(error));
-  }, [pageInfo.currentPage, search, active, promo]);
+  }, [searchParams]);
 
   const products = items.map((item: ProductCardProps) => (
     <ProductCard key={item.id} {...item} setIsOpen={setIsOpen} />
@@ -67,18 +64,13 @@ export const Products = () => {
 
   return (
     <>
-      {isOpen ? <Lightbox setIsOpen={setIsOpen} /> : null}
+      {isOpen && <Lightbox setIsOpen={setIsOpen} />}
       <Header />
       {loading && <Loader />}
-      {isEmpty ? <IsEmpty /> : <Grid>{products}</Grid>}
-      {isEmpty ? null : (
-        <Pagination
-          currentPage={pageInfo.currentPage}
-          totalPages={pageInfo.totalPages}
-          pageInfo={pageInfo}
-          setPageInfo={setPageInfo}
-        />
-      )}
+      {items.length ? <Grid>{products}</Grid> : <IsEmpty />}
+      {items.length ? (
+        <Pagination pageInfo={pageInfo} setPageInfo={setPage} />
+      ) : null}
     </>
   );
 };

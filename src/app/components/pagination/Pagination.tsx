@@ -29,12 +29,8 @@ const PaginationWrapper = styled.div`
   }
 `;
 
-const Pagination = ({
-  currentPage,
-  totalPages,
-  pageInfo,
-  setPageInfo,
-}: PaginationProps) => {
+const Pagination = ({ pageInfo, setPageInfo }: PaginationProps) => {
+  const { currentPage, totalPages } = pageInfo;
   const arr = Array.from(Array(totalPages).keys());
 
   let start = [];
@@ -67,7 +63,7 @@ const Pagination = ({
               ? 'pagination__link active'
               : 'pagination__link'
           }
-          onClick={() => setPageInfo({ ...pageInfo, currentPage: item + 1 })}
+          onClick={() => setPageInfo(item + 1)}
         >
           {item + 1}
         </button>
@@ -85,9 +81,7 @@ const Pagination = ({
               : 'pagination__link'
           }
           onClick={
-            typeof item === 'number'
-              ? () => setPageInfo({ ...pageInfo, currentPage: item })
-              : undefined
+            typeof item === 'number' ? () => setPageInfo(item) : undefined
           }
         >
           {item}
@@ -104,7 +98,7 @@ const Pagination = ({
         <button
           type="button"
           className="pagination__link pagination__link--first"
-          onClick={() => setPageInfo({ ...pageInfo, currentPage: 1 })}
+          onClick={() => setPageInfo(1)}
         >
           First
         </button>
@@ -112,9 +106,7 @@ const Pagination = ({
         <button
           type="button"
           className="pagination__link pagination__link--last"
-          onClick={() =>
-            setPageInfo({ ...pageInfo, currentPage: pageInfo.totalPages })
-          }
+          onClick={() => setPageInfo(totalPages)}
         >
           Last
         </button>
