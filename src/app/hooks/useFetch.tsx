@@ -1,25 +1,30 @@
 import { useEffect, useReducer, useRef } from 'react';
 import axios from 'axios';
 import { ActionType, StateTypes } from './useFetch.types';
+import { Status } from './useFetch.enum';
 
 export const useFetch = (url: string) => {
   const cache: any = useRef({});
 
   const initialState: StateTypes = {
-    status: 'IDLE',
+    status: Status.idle,
     error: null,
     data: [],
   };
 
   const fetchReducer = (state: StateTypes, action: ActionType) => {
     switch (action.type) {
-      case 'FETCHING':
-        return { ...initialState, status: 'FETCHING' };
-      case 'FETCHED':
-        return { ...initialState, status: 'FETCHED', data: action.payload };
-      case 'ERROR':
+      case Status.fetching:
+        return { ...initialState, status: Status.fetching };
+      case Status.fetched:
+        return {
+          ...initialState,
+          status: Status.fetched,
+          data: action.payload,
+        };
+      case Status.error:
         console.error(action.payload);
-        return { ...initialState, status: 'ERROR', error: action.payload };
+        return { ...initialState, status: Status.error, error: action.payload };
       default:
         return state;
     }
@@ -30,21 +35,21 @@ export const useFetch = (url: string) => {
   useEffect(() => {
     if (!url) return;
     const fetchData = async () => {
-      dispatch({ type: 'FETCHING' });
+      dispatch({ type: Status.fetching });
       if (cache.current[url]) {
         const cachedData = cache.current[url];
-        dispatch({ type: 'FETCHED', payload: cachedData });
+        dispatch({ type: Status.fetched, payload: cachedData });
         return;
       }
       try {
         const response = await axios.get(url);
         cache.current[url] = response.data;
-        dispatch({ type: 'FETCHED', payload: response.data });
+        dispatch({ type: Status.fetched, payload: response.data });
       } catch (error) {
         if (error instanceof Error) {
-          dispatch({ type: 'ERROR', payload: error });
+          dispatch({ type: Status.error, payload: error });
         }
-        dispatch({ type: 'ERROR', payload: String(error) });
+        dispatch({ type: Status.error, payload: String(error) });
       }
     };
 

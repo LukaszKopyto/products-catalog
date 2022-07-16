@@ -11,6 +11,7 @@ import Loader from '../components/loader/Loader';
 import { useSearchParams } from '../hooks/useSearchParams';
 import { useFetch } from '../hooks/useFetch';
 import { FetchedTypes } from './Products.types';
+import { Status } from '../hooks/useFetch.enum';
 
 const Grid = styled.div`
   display: grid;
@@ -50,9 +51,9 @@ export const Products = () => {
     <>
       {isOpen && <Lightbox setIsOpen={setIsOpen} />}
       <Header />
-      {status === 'FETCHING' && <Loader />}
-      {status === 'FETCHED' && !items.length && <IsEmpty />}
-      {items.length && showProducts}
+      {status === Status.fetching && <Loader />}
+      {status === Status.fetched && showProducts}
+      {status === Status.error && <IsEmpty />}
     </>
   );
 };
