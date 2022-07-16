@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import Header from '../components/header/Header';
@@ -10,6 +9,8 @@ import Pagination from '../components/pagination/Pagination';
 import IsEmpty from '../components/isEmpty/IsEmpty';
 import Loader from '../components/loader/Loader';
 import { useSearchParams } from '../hooks/useSearchParams';
+import { useFetch } from '../hooks/useFetch';
+import { FetchedTypes } from './Products.types';
 
 const Grid = styled.div`
   display: grid;
@@ -22,41 +23,18 @@ const Grid = styled.div`
   }
 `;
 
-const DefaultState = {
-  currentPage: 1,
-  itemCount: 0,
-  itemsPerPage: 0,
-  totalItems: 0,
-  totalPages: 0,
-};
-
 export const Products = () => {
-  const [items, setItems] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [pageInfo, setPageInfo] = useState(DefaultState);
-  const [loading, setLoading] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const history = useHistory();
 
   const setPage = (currentPage: number) => {
     searchParams.set('page', currentPage.toString());
     history.push({ search: searchParams.toString() });
-    setPageInfo({ ...pageInfo, currentPage });
   };
-
-  useEffect(() => {
-    const url = `https://join-tsh-api-staging.herokuapp.com/products?limit=8&${searchParams.toString()}`;
-    setLoading(true);
-    axios
-      .get(url)
-      .then((res) => {
-        setLoading(false);
-        setItems(res.data.items);
-        setPageInfo(res.data.meta);
-      })
-      // eslint-disable-next-line no-console
-      .catch((error) => console.error(error));
-  }, [searchParams]);
+  const URL = `https://join-tsh-api-staging.herokuapp.com/products?limit=8&${searchParams.toString()}`;
+  const { status, data }: FetchedTypes = useFetch(URL);
+  const { items = [], meta } = data;
 
   const products = items.map((item: ProductCardProps) => (
     <ProductCard key={item.id} {...item} setIsOpen={setIsOpen} />
@@ -66,10 +44,10 @@ export const Products = () => {
     <>
       {isOpen && <Lightbox setIsOpen={setIsOpen} />}
       <Header />
-      {loading && <Loader />}
+      {status === 'fetching' && <Loader />}
       {items.length ? <Grid>{products}</Grid> : <IsEmpty />}
       {items.length ? (
-        <Pagination pageInfo={pageInfo} setPageInfo={setPage} />
+        <Pagination pageInfo={meta} setPageInfo={setPage} />
       ) : null}
     </>
   );

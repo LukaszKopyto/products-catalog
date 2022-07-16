@@ -1,4 +1,4 @@
-interface pageInfo {
+interface PageInfo {
   currentPage: number;
   itemCount: number;
   itemsPerPage: number;
@@ -7,6 +7,6 @@ interface pageInfo {
 }
 
 export interface PaginationProps {
-  pageInfo: pageInfo;
+  pageInfo: PageInfo;
   setPageInfo: (currentPage: number) => void;
 }
