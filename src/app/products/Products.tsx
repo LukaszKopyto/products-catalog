@@ -40,15 +40,19 @@ export const Products = () => {
     <ProductCard key={item.id} {...item} setIsOpen={setIsOpen} />
   ));
 
+  const showProducts = (
+    <>
+      <Grid>{products}</Grid>
+      <Pagination pageInfo={meta} setPageInfo={setPage} />
+    </>
+  );
   return (
     <>
       {isOpen && <Lightbox setIsOpen={setIsOpen} />}
       <Header />
-      {status === 'fetching' && <Loader />}
-      {items.length ? <Grid>{products}</Grid> : <IsEmpty />}
-      {items.length ? (
-        <Pagination pageInfo={meta} setPageInfo={setPage} />
-      ) : null}
+      {status === 'FETCHING' && <Loader />}
+      {status === 'FETCHED' && !items.length && <IsEmpty />}
+      {items.length && showProducts}
     </>
   );
 };
